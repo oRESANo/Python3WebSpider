@@ -14,6 +14,7 @@ class CrackGeetest():
         self.url = 'https://account.geetest.com/login'
         self.browser = webdriver.Chrome()
         self.wait = WebDriverWait(self.browser, 20)
+        self.browser.get(self.url)
         self.email = EMAIL
         self.password = PASSWORD
         
@@ -22,7 +23,7 @@ class CrackGeetest():
         获取初始验证按钮
         :return: 按钮对象
         """
-        button = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'geetest_radar_tip')))
+        button = self.wait.until(EC.element_to_be_clickable((By.ID, 'captchaIdLogin')))
         return button
     
     def get_position(self):
@@ -138,6 +139,16 @@ class CrackGeetest():
         time.sleep(0.5)
         ActionChains(self.browser).release().perform()
         
+    def login(self):
+        input = self.wait.until(EC.element_located_to_be_selected((By.XPATH, '//input[@placeholder="请输入邮箱"]')))
+        password = self.wait.until(EC.element_located_to_be_selected((By.XPATH, '//input[@placeholder="请输入密码"]')))
+        return input, password
+    
 if __name__ == '__main__':
     gee = CrackGeetest()
-    
+    button = gee.get_geetest_button()
+    input, pwd = gee.login()
+    print(button, input, pwd)
+    input.send_keys(EMAIL)
+    pwd.send_keys(PASSWORD)
+    button.click()
